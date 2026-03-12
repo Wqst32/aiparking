@@ -1,7 +1,7 @@
 <?php
 
 $conn = new mysqli(
-"mysql://root:mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD@caboose.proxy.rlwy.net:47538/railway",
+"mysql://root:mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD@mysql.railway.internal:3306/railway",
 "root",
 "mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD",
 "parking"
@@ -13,3 +13,4 @@ die("blad");
 
 
 ?>
+
