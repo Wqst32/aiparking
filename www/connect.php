@@ -1,14 +1,15 @@
 <?php
 
 $conn = new mysqli(
-"mysql-aiparking.alwaysdata.net",
-"aiparking",
-"zaq1@WSX",
-"aiparking_parking"
+"mysql://root:mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD@caboose.proxy.rlwy.net:47538/railway",
+"root",
+"mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD",
+"parking"
 );
 
 if ($conn->connect_error) {
 die("blad");
 }
+
 
 ?>
