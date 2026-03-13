@@ -3,8 +3,8 @@ import mysql.connector
 
 app = Flask(__name__)
 
-@app.route("/update")
-def update():
+@app.route("/wjazd")
+def wjazd():
 
     db = mysql.connector.connect(
         host="HOST",
@@ -14,9 +14,9 @@ def update():
     )
 
     cursor = db.cursor()
-    cursor.execute("UPDATE parking SET status='test' WHERE id=1")
+    cursor.execute("INSERT INTO parking (tablica, czas) VALUES ('TEST123', NOW())")
     db.commit()
 
-    return "OK"
+    return "dodano"
 
 app.run(host="0.0.0.0", port=8080)
