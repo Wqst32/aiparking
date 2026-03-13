@@ -16,5 +16,9 @@ def upload():
     # tutaj AI analizuje zdjęcie
 
     return "ok"
+cursor = db.cursor()
+cursor.execute("SELECT 1")
+
+print("POLACZENIE Z BAZA DZIALA")
 
 app.run(host="0.0.0.0", port=8080)
