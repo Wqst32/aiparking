@@ -22,4 +22,6 @@ def update_db():
 
     return "baza zmieniona"
 
+print("SERVER START")
+
 app.run(host="0.0.0.0", port=8080)
