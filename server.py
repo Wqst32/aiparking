@@ -1,20 +1,25 @@
-from flask import Flask, request
-import cv2
+from flask import Flask
+import mysql.connector
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "AI parking działa"
+def connect_db():
+    return mysql.connector.connect(
+        host="mysql://root:mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD@mysql.railway.internal:3306/railway",
+        user="root",
+        password="mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD",
+        database="parking"
+    )
 
-@app.route("/upload", methods=["POST"])
-def upload():
+@app.route("/update")
+def update_db():
 
-    file = request.files["image"]
-    file.save("image.jpg")
+    db = connect_db()
+    cursor = db.cursor()
 
-    # tutaj AI analizuje zdjęcie
+    cursor.execute("UPDATE parking SET status='test' WHERE id=1")
+    db.commit()
 
-    return "ok"
+    return "baza zmieniona"
 
 app.run(host="0.0.0.0", port=8080)
