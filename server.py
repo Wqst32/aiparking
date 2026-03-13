@@ -7,10 +7,10 @@ app = Flask(__name__)
 def wjazd():
 
     db = mysql.connector.connect(
-        host="HOST",
-        user="USER",
-        password="PASSWORD",
-        database="DATABASE"
+        host="mysql://root:mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD@mysql.railway.internal:3306/railway",
+        user="root",
+        password="mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD",
+        database="parking"
     )
 
     cursor = db.cursor()
