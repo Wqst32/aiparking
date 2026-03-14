@@ -74,7 +74,7 @@
     <script>
         async function ladujDane() {
             try {
-                const response = await fetch('data/parking.json?_=' + Date.now());
+                const response = await fetch('data/parking.json?_=' + new Date().getTime())
                 const dane = await response.json();
                 
                 let html = '';
