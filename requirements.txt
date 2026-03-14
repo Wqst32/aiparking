@@ -1,8 +1,0 @@
-tensorflow
-opencv-python-headless
-numpy
-requests
-flask
-psycopg2
-mysql-connector-python
-pymysql
