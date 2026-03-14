@@ -3,112 +3,585 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor Parkingu</title>
+    <title>System Parkingu</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
+            background: #f4f4f4;
+        }
+
+        /* Pasek boczny */
+        .sidebar {
+            height: 100vh;
+            width: 280px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
             padding: 20px;
+            color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1000;
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
+
+        .sidebar-header {
             text-align: center;
-            color: #333;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
         }
-        .grid {
+
+        .sidebar-header h2 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .menu-item {
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: rgba(255,255,255,0.3);
+            border-left: 4px solid #f1c40f;
+        }
+
+        .menu-item i {
+            font-size: 1.2em;
+            width: 25px;
+        }
+
+        /* Główna zawartość */
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+            min-height: 100vh;
+            background: #f4f4f4;
+        }
+
+        /* Karty */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-header h2 {
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+
+        /* Kalkulator */
+        .calculator {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .time-input {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .price-list {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .price-item.total {
+            font-weight: bold;
+            font-size: 1.2em;
+            border-bottom: none;
+            margin-top: 10px;
+            background: #3498db;
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        /* Przyciski */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        /* Grid dla kart parkingu */
+        .parking-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            margin: 30px 0;
+            margin-bottom: 30px;
         }
-        .miejsce {
+
+        .parking-spot {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .parking-spot.wolne {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .parking-spot.zajete {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .spot-number {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Kontakt */
+        .contact-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .contact-item {
+            background: #f9f9f9;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
         }
-        .wolne {
-            background: #d4edda;
-            border: 2px solid #28a745;
+
+        .contact-item i {
+            font-size: 2em;
+            color: #3498db;
+            margin-bottom: 10px;
         }
-        .zajete {
-            background: #f8d7da;
-            border: 2px solid #dc3545;
-        }
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            font-size: 1.2em;
-        }
-        .blad {
-            color: red;
-            text-align: center;
-            padding: 10px;
+
+        /* Sekcje */
+        .section {
             display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Responsywność */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .time-input {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-info {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚗 Parking 6 miejsc</h1>
-        
-        <div class="blad" id="blad"></div>
-        
-        <div class="grid" id="grid"></div>
-        
-        <div class="stats">
-            <div>Wolne: <span id="wolne">0</span></div>
-            <div>Zajęte: <span id="zajete">0</span></div>
+    <!-- Pasek boczny -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>🚗 Parking System</h2>
+            <p>Panel zarządzania</p>
         </div>
         
-        <p style="text-align: center; color: #666;" id="czas"></p>
+        <div class="menu-item active" onclick="pokazSekcje('glowna')">
+            <i>🏠</i>
+            <span>Strona główna</span>
+        </div>
+        
+        <div class="menu-item" onclick="pokazSekcje('parking')">
+            <i>🅿️</i>
+            <span>Miejsca parkingowe</span>
+        </div>
+        
+        <div class="menu-item" onclick="pokazSekcje('kalkulator')">
+            <i>💰</i>
+            <span>Kalkulator kosztów</span>
+        </div>
+        
+        <div class="menu-item" onclick="pokazSekcje('kontakt')">
+            <i>📞</i>
+            <span>Kontakt</span>
+        </div>
+        
+        <!-- Miejsce na przyszłe funkcje -->
+        <div class="menu-item" onclick="pokazSekcje('funkcja1')" style="opacity:0.7">
+            <i>⚙️</i>
+            <span>Nowa funkcja (wkrótce)</span>
+        </div>
+        
+        <div class="menu-item" onclick="pokazSekcje('funkcja2')" style="opacity:0.7">
+            <i>🔧</i>
+            <span>Kolejna funkcja</span>
+        </div>
+    </div>
+
+    <!-- Główna zawartość -->
+    <div class="main-content">
+        <!-- Sekcja: Strona główna -->
+        <div id="glowna" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🏠 Witaj w systemie parkingu</h2>
+                </div>
+                <p style="margin-bottom: 20px; color: #666;">
+                    Nowoczesny system zarządzania parkingiem z 6 miejscami. 
+                    Wybierz opcję z menu bocznego aby zarządzać parkingiem.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px;">
+                    <div style="background: #e8f4f8; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #2c3e50; margin-bottom: 10px;">6</h3>
+                        <p style="color: #666;">Miejsc parkingowych</p>
+                    </div>
+                    <div style="background: #e8f4f8; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #2c3e50; margin-bottom: 10px;" id="homeWolne">0</h3>
+                        <p style="color: #666;">Wolnych miejsc</p>
+                    </div>
+                    <div style="background: #e8f4f8; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #2c3e50; margin-bottom: 10px;">24/7</h3>
+                        <p style="color: #666;">Godziny otwarcia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sekcja: Parking -->
+        <div id="parking" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🅿️ Miejsca parkingowe</h2>
+                </div>
+                
+                <div class="parking-grid" id="parkingGrid">
+                    <!-- Miejsca będą generowane -->
+                </div>
+                
+                <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="odswiezParking()">🔄 Odśwież</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sekcja: Kalkulator -->
+        <div id="kalkulator" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>💰 Kalkulator kosztów parkowania</h2>
+                </div>
+                
+                <div class="calculator">
+                    <div class="time-input">
+                        <div>
+                            <div class="input-group">
+                                <label>Godzina wjazdu:</label>
+                                <input type="time" id="godzinaWe" value="08:00">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Data wjazdu:</label>
+                                <input type="date" id="dataWe" value="2024-03-15">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="input-group">
+                                <label>Godzina wyjazdu:</label>
+                                <input type="time" id="godzinaWy" value="17:00">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Data wyjazdu:</label>
+                                <input type="date" id="dataWy" value="2024-03-15">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Stawka za godzinę (zł):</label>
+                        <input type="number" id="stawka" value="5" min="1" max="50">
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="obliczKoszt()" style="width: 100%; margin: 20px 0;">
+                        🧮 Oblicz koszt
+                    </button>
+                    
+                    <div class="price-list" id="wynikKalkulatora">
+                        <div class="price-item">
+                            <span>Czas parkowania:</span>
+                            <span id="czasParkowania">0 godzin</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Stawka:</span>
+                            <span id="wyswietlStawke">5 zł/h</span>
+                        </div>
+                        <div class="price-item total">
+                            <span>Do zapłaty:</span>
+                            <span id="kosztCalkowity">0 zł</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sekcja: Kontakt -->
+        <div id="kontakt" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📞 Kontakt</h2>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i>📧</i>
+                        <h3>Email</h3>
+                        <p>parking@example.com</p>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i>📱</i>
+                        <h3>Telefon</h3>
+                        <p>+48 123 456 789</p>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i>📍</i>
+                        <h3>Adres</h3>
+                        <p>ul. Parkingowa 1, 00-001 Warszawa</p>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i>⏰</i>
+                        <h3>Godziny otwarcia</h3>
+                        <p>Pon-Nd: 24/7</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Miejsce na przyszłe funkcje -->
+        <div id="funkcja1" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>⚙️ Nowa funkcja (wkrótce)</h2>
+                </div>
+                <p>Tutaj pojawią się nowe funkcje systemu.</p>
+            </div>
+        </div>
+        
+        <div id="funkcja2" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🔧 Kolejna funkcja</h2>
+                </div>
+                <p>Miejsce na rozwój systemu.</p>
+            </div>
+        </div>
     </div>
 
     <script>
-        async function ladujDane() {
-            try {
-                const response = await fetch('data/parking.json?_=' + new Date().getTime())
-                const dane = await response.json();
-                
-                let html = '';
-                let wolne = 0;
-                let zajete = 0;
-                
-                dane.forEach(m => {
-                    if (m.status === 'wolne') wolne++;
-                    else zajete++;
-                    
-                    html += `
-                        <div class="miejsce ${m.status}">
-                            <h3>Miejsce ${m.id}</h3>
-                            <p style="font-size: 1.2em;">${m.blacha}</p>
-                            <p style="font-weight: bold;">${m.status.toUpperCase()}</p>
-                            <small>${m.czas}</small>
-                        </div>
-                    `;
-                });
-                
-                document.getElementById('grid').innerHTML = html;
-                document.getElementById('wolne').textContent = wolne;
-                document.getElementById('zajete').textContent = zajete;
-                document.getElementById('czas').textContent = 'Aktualizacja: ' + new Date().toLocaleTimeString();
-                document.getElementById('blad').style.display = 'none';
-                
-            } catch (error) {
-                document.getElementById('blad').style.display = 'block';
-                document.getElementById('blad').textContent = 'Błąd: ' + error.message;
-            }
+        // Przełączanie sekcji
+        function pokazSekcje(id) {
+            // Ukryj wszystkie sekcje
+            document.querySelectorAll('.section').forEach(s => {
+                s.classList.remove('active');
+            });
+            
+            // Pokaż wybraną sekcję
+            document.getElementById(id).classList.add('active');
+            
+            // Zaznacz menu
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Znajdź kliknięty element i zaznacz
+            event.currentTarget.classList.add('active');
         }
-        
-        ladujDane();
-        setInterval(ladujDane, 5000);
+
+        // Funkcja do obliczania kosztu
+        function obliczKoszt() {
+            // Pobierz dane z formularza
+            const dataWe = document.getElementById('dataWe').value;
+            const godzinaWe = document.getElementById('godzinaWe').value;
+            const dataWy = document.getElementById('dataWy').value;
+            const godzinaWy = document.getElementById('godzinaWy').value;
+            const stawka = parseFloat(document.getElementById('stawka').value) || 5;
+            
+            // Połącz datę i godzinę
+            const wejscie = new Date(`${dataWe}T${godzinaWe}:00`);
+            const wyjscie = new Date(`${dataWy}T${godzinaWy}:00`);
+            
+            // Oblicz różnicę w godzinach
+            const roznicaMs = wyjscie - wejscie;
+            const roznicaGodzin = roznicaMs / (1000 * 60 * 60);
+            
+            if (roznicaGodzin < 0) {
+                alert('❌ Data wyjazdu musi być późniejsza niż data wjazdu!');
+                return;
+            }
+            
+            // Zaokrąglij w górę do pełnych godzin (jak na prawdziwym parkingu)
+            const godzinyDoZaokraglenia = Math.ceil(roznicaGodzin);
+            
+            // Oblicz koszt
+            const koszt = godzinyDoZaokraglenia * stawka;
+            
+            // Wyświetl wyniki
+            document.getElementById('czasParkowania').textContent = 
+                `${roznicaGodzin.toFixed(1)} godzin (zaokrąglone do ${godzinyDoZaokraglenia}h)`;
+            document.getElementById('wyswietlStawke').textContent = `${stawka} zł/h`;
+            document.getElementById('kosztCalkowity').textContent = `${koszt.toFixed(2)} zł`;
+        }
+
+        // Symulacja danych parkingu
+        const miejscaParkingowe = [
+            {id: 1, blacha: "WAW123", status: "wolne", czas: "08:00 15.03.2024"},
+            {id: 2, blacha: "KRK456", status: "zajete", czas: "10:30 15.03.2024"},
+            {id: 3, blacha: "GDN789", status: "wolne", czas: ""},
+            {id: 4, blacha: "POZ111", status: "wolne", czas: ""},
+            {id: 5, blacha: "WRO222", status: "zajete", czas: "09:15 15.03.2024"},
+            {id: 6, blacha: "LUB333", status: "wolne", czas: ""}
+        ];
+
+        // Aktualizacja wyświetlania parkingu
+        function odswiezParking() {
+            const grid = document.getElementById('parkingGrid');
+            let wolne = 0;
+            let zajete = 0;
+            
+            grid.innerHTML = miejscaParkingowe.map(miejsce => {
+                if (miejsce.status === 'wolne') wolne++;
+                else zajete++;
+                
+                return `
+                    <div class="parking-spot ${miejsce.status}">
+                        <div class="spot-number">Miejsce ${miejsce.id}</div>
+                        <div style="font-size: 1.1em; margin: 10px 0;">${miejsce.blacha}</div>
+                        <div style="font-weight: bold; color: ${miejsce.status === 'wolne' ? '#28a745' : '#dc3545'};">
+                            ${miejsce.status.toUpperCase()}
+                        </div>
+                        <div style="font-size: 0.8em; color: #666; margin-top: 10px;">
+                            ${miejsce.czas || ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Aktualizuj licznik na stronie głównej
+            document.getElementById('homeWolne').textContent = wolne;
+        }
+
+        // Inicjalizacja
+        odswiezParking();
+        obliczKoszt(); // Pokaż przykładowe obliczenia
     </script>
 </body>
 </html>
