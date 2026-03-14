@@ -141,6 +141,16 @@
             font-size: 0.9em;
         }
 
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
         @media (max-width: 600px) {
             .parking-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -152,6 +162,8 @@
     <div class="container">
         <h1>🚗 Monitor Parkingu</h1>
         <p class="subtitle">6 miejsc parkingowych - odświeżanie co 5 sekund</p>
+        
+        <div class="error-message" id="errorMessage"></div>
         
         <div class="parking-grid" id="parkingGrid">
             <!-- Miejsca parkingowe będą generowane przez JavaScript -->
@@ -174,56 +186,65 @@
     </div>
 
     <script>
-        // Funkcja do pobierania danych z bazy
         async function fetchParkingData() {
             try {
                 const response = await fetch('api/get_parking.php');
                 const data = await response.json();
+                
+                // Ukryj błąd jeśli był
+                document.getElementById('errorMessage').style.display = 'none';
+                
                 updateParkingDisplay(data);
                 updateLastUpdateTime();
             } catch (error) {
-                console.error('Błąd pobierania danych:', error);
+                console.error('Błąd:', error);
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'Błąd połączenia z serwerem: ' + error.message;
             }
         }
 
-        // Funkcja do aktualizacji wyświetlania
         function updateParkingDisplay(spots) {
             const grid = document.getElementById('parkingGrid');
             let freeCount = 0;
             let occupiedCount = 0;
 
-            grid.innerHTML = spots.map(spot => {
-                if (spot.status === 'wolne') {
-                    freeCount++;
-                } else {
-                    occupiedCount++;
-                }
+            // Jeśli spots to tablica
+            if (Array.isArray(spots)) {
+                grid.innerHTML = spots.map(spot => {
+                    if (spot.status === 'wolne') {
+                        freeCount++;
+                    } else {
+                        occupiedCount++;
+                    }
 
-                return `
-                    <div class="parking-spot ${spot.status}">
-                        <div class="spot-number">Miejsce ${spot.id}</div>
-                        <div class="spot-plate">${spot.blacha}</div>
-                        <div class="spot-status">${spot.status}</div>
-                        <div class="spot-time">${spot.czas || '---'}</div>
-                    </div>
-                `;
-            }).join('');
+                    return `
+                        <div class="parking-spot ${spot.status}">
+                            <div class="spot-number">Miejsce ${spot.id}</div>
+                            <div class="spot-plate">${spot.blacha || '---'}</div>
+                            <div class="spot-status">${spot.status}</div>
+                            <div class="spot-time">${spot.czas || '---'}</div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                // Jeśli spots to obiekt z błędem
+                grid.innerHTML = '<div class="error-message" style="display:block">Błąd danych: ' + JSON.stringify(spots) + '</div>';
+            }
 
             document.getElementById('freeSpots').textContent = freeCount;
             document.getElementById('occupiedSpots').textContent = occupiedCount;
         }
 
-        // Funkcja do aktualizacji czasu
         function updateLastUpdateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('pl-PL');
             document.getElementById('lastUpdate').textContent = timeString;
         }
 
-        // Odświeżanie danych co 5 sekund
+        // Odświeżanie co 5 sekund
         setInterval(fetchParkingData, 5000);
-
-        // Pierwsze pobranie danych po załadowaniu strony
+        
+        // Pierwsze pobranie
         fetchParkingData();
     </script>
 </body>
