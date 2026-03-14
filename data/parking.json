@@ -1,8 +1,38 @@
 [
-    {"id": 1, "blacha": "Miejsce 1", "status": "wolne", "czas": ""},
-    {"id": 2, "blacha": "Miejsce 2", "status": "wolne", "czas": ""},
-    {"id": 3, "blacha": "Miejsce 3", "status": "wolne", "czas": ""},
-    {"id": 4, "blacha": "Miejsce 4", "status": "wolne", "czas": ""},
-    {"id": 5, "blacha": "Miejsce 5", "status": "wolne", "czas": ""},
-    {"id": 6, "blacha": "Miejsce 6", "status": "wolne", "czas": ""}
+  {
+    "id": 1,
+    "blacha": "WRO222",
+    "status": "zajete",
+    "czas": "14:17 14.03.2026"
+  },
+  {
+    "id": 2,
+    "blacha": "Miejsce 2",
+    "status": "wolne",
+    "czas": ""
+  },
+  {
+    "id": 3,
+    "blacha": "Miejsce 3",
+    "status": "wolne",
+    "czas": ""
+  },
+  {
+    "id": 4,
+    "blacha": "Miejsce 4",
+    "status": "wolne",
+    "czas": ""
+  },
+  {
+    "id": 5,
+    "blacha": "Miejsce 5",
+    "status": "wolne",
+    "czas": ""
+  },
+  {
+    "id": 6,
+    "blacha": "Miejsce 6",
+    "status": "wolne",
+    "czas": ""
+  }
 ]
