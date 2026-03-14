@@ -1,5 +1,0 @@
-<FilesMatch "\.php$">
-    SetHandler application/x-httpd-php
-</FilesMatch>
-
-AddType application/x-httpd-php .php
