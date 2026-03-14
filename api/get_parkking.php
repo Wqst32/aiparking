@@ -3,11 +3,11 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
 // Konfiguracja bazy danych - Railway ustawia zmienne środowiskowe
-$host = getenv('MYSQLHOST') ?: 'localhost';
-$port = getenv('MYSQLPORT') ?: '3306';
-$user = getenv('MYSQLUSER') ?: 'root';
-$password = getenv('MYSQLPASSWORD') ?: '';
-$database = getenv('MYSQLDATABASE') ?: 'railway';
+$host = getenv('mysql://root:mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD@mysql.railway.internal:3306/railway') ?;
+$port = getenv('3306') ?;
+$user = getenv('root') ?;
+$password = getenv('mlUVabLxUQjJwkoBuADmrmtpaJcVEQMD') ?;
+$database = getenv('parking') ?;
 
 // Połączenie z bazą danych
 $conn = new mysqli($host, $user, $password, $database, $port);
