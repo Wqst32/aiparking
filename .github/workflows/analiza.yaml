@@ -3,21 +3,27 @@ name: Analiza zdjęć
 on:
   push:
     paths:
-      - 'zdjecia/*'  # Uruchamia się gdy dodajesz zdjęcie
+      - 'zdjecia/*'
 
 jobs:
   analizuj:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # WAŻNE: uprawnienia do zapisu
+    
     steps:
-      - uses: actions/checkout@v2
+      - name: Pobierz repozytorium
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Automatyczny token GitHub
       
-      - name: Uruchom skrypt
+      - name: Uruchom skrypt Python
         run: python skrypt.py
       
-      - name: Zapisz zmiany
+      - name: Zapisz zmiany w repozytorium
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add data/parking.json
-          git commit -m "Auto aktualizacja z zdjęcia"
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto aktualizacja z zdjęcia"
           git push
