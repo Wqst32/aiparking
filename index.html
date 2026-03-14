@@ -185,67 +185,6 @@
         </div>
     </div>
 
-    <script>
-        async function fetchParkingData() {
-            try {
-                const response = await fetch('api/get_parking.php');
-                const data = await response.json();
-                
-                // Ukryj błąd jeśli był
-                document.getElementById('errorMessage').style.display = 'none';
-                
-                updateParkingDisplay(data);
-                updateLastUpdateTime();
-            } catch (error) {
-                console.error('Błąd:', error);
-                document.getElementById('errorMessage').style.display = 'block';
-                document.getElementById('errorMessage').textContent = 'Błąd połączenia z serwerem: ' + error.message;
-            }
-        }
 
-        function updateParkingDisplay(spots) {
-            const grid = document.getElementById('parkingGrid');
-            let freeCount = 0;
-            let occupiedCount = 0;
-
-            // Jeśli spots to tablica
-            if (Array.isArray(spots)) {
-                grid.innerHTML = spots.map(spot => {
-                    if (spot.status === 'wolne') {
-                        freeCount++;
-                    } else {
-                        occupiedCount++;
-                    }
-
-                    return `
-                        <div class="parking-spot ${spot.status}">
-                            <div class="spot-number">Miejsce ${spot.id}</div>
-                            <div class="spot-plate">${spot.blacha || '---'}</div>
-                            <div class="spot-status">${spot.status}</div>
-                            <div class="spot-time">${spot.czas || '---'}</div>
-                        </div>
-                    `;
-                }).join('');
-            } else {
-                // Jeśli spots to obiekt z błędem
-                grid.innerHTML = '<div class="error-message" style="display:block">Błąd danych: ' + JSON.stringify(spots) + '</div>';
-            }
-
-            document.getElementById('freeSpots').textContent = freeCount;
-            document.getElementById('occupiedSpots').textContent = occupiedCount;
-        }
-
-        function updateLastUpdateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('pl-PL');
-            document.getElementById('lastUpdate').textContent = timeString;
-        }
-
-        // Odświeżanie co 5 sekund
-        setInterval(fetchParkingData, 5000);
-        
-        // Pierwsze pobranie
-        fetchParkingData();
-    </script>
 </body>
 </html>
