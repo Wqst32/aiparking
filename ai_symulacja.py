@@ -4,6 +4,12 @@ import json
 import random
 from datetime import datetime
 
+import sys
+print("🚀 AI SYMULACJA - START")
+print(f"Argumenty: {sys.argv}")
+print(f"Katalog bieżący: {os.getcwd()}")
+print(f"Pliki w katalogu: {os.listdir('.')}")
+
 # Lista możliwych tablic (do symulacji)
 TABLICE_REJESTRACYJNE = [
     "WAW12345", "KRK67890", "GDN54321", "POZ98765",
