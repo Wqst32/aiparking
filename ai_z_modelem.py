@@ -8,7 +8,22 @@ from tensorflow.keras.models import load_model
 import cv2
 import sys
 
-print("🤖 AI - START")
+print("🤖 AI - START") 
+
+# Debug
+print(f"Zawartość zdjecia_czekajace: {os.listdir('zdjecia_czekajace')}")
+
+zdjecia = [f for f in os.listdir('zdjecia_czekajace') if f.lower().endswith(('.jpg', '.png'))]
+print(f"Znalezione zdjęcia: {zdjecia}")
+print(f"Typ zdjecia: {type(zdjecia)}")
+
+if not zdjecia:
+    print("❌ Brak zdjęć")
+    sys.exit(0)
+
+zdjecie = zdjecia
+print(f"Wybrane zdjęcie: {zdjecie}")
+print(f"Typ zdjecie: {type(zdjecie)}")
 
 # 1. Znajdź zdjęcie
 zdjecia = [f for f in os.listdir('zdjecia_czekajace') if f.lower().endswith(('.jpg', '.png'))]
