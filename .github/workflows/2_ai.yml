@@ -1,9 +1,10 @@
-name: 2. AI - rozpoznawanie tablic
+name: AI
 
 on:
   push:
     paths:
-      - 'zdjecia_czekajace/*.jpg'
+      - 'zdjecia_czekajace/**'
+  workflow_dispatch:
 
 jobs:
   ai:
@@ -11,19 +12,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4  # Zmienione z v3 na v4
-      
-      - name: Instalacja bibliotek
-        run: pip install tensorflow opencv-python-headless numpy
-      
-      - name: Uruchom AI
-        run: python ai_z_modelem.py
-        continue-on-error: false  # Zatrzymaj jeśli błąd
-      
-      - name: Zapisz zmiany
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add zdjecia_czekajace/ zdjecia_gotowe/ data/parking.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "AI auto"
-          git push
+      - uses: actions/checkout@v4
+      - run: echo "WORKFLOW ODPALONY"
+      - run: ls -la zdjecia_czekajace/
