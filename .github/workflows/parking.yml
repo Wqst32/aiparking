@@ -13,6 +13,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      
       - name: Sprawdź czy są zdjęcia w zdjecia/
         run: |
           if [ -n "$(ls -A zdjecia/ 2>/dev/null)" ]; then
@@ -22,6 +23,10 @@ jobs:
           else
             echo "⏭️ Brak zdjęć w zdjecia/"
           fi
+      
+      - name: Pull najnowsze zmiany
+        run: git pull --rebase
+      
       - name: Zapisz zmiany
         run: |
           git config --global user.name "GitHub Actions"
@@ -37,6 +42,7 @@ jobs:
     needs: selekcja
     steps:
       - uses: actions/checkout@v4
+      
       - name: Sprawdź czy są zdjęcia w zdjecia_czekajace/
         run: |
           if [ -n "$(ls -A zdjecia_czekajace/ 2>/dev/null)" ]; then
@@ -46,6 +52,10 @@ jobs:
           else
             echo "⏭️ Brak zdjęć w zdjecia_czekajace/"
           fi
+      
+      - name: Pull najnowsze zmiany
+        run: git pull --rebase
+      
       - name: Zapisz zmiany
         run: |
           git config --global user.name "GitHub Actions"
