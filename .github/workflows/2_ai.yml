@@ -1,0 +1,23 @@
+name: 2. AI - rozpoznawanie tablic
+
+on:
+  push:
+    paths:
+      - 'zdjecia_czekajace/*.jpg'
+
+jobs:
+  ai:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v3
+      - run: pip install numpy
+      - run: python ai_symulacja.py
+      - run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add zdjecia_czekajace/ zdjecia_gotowe/ data/parking.json
+          git commit -m "AI auto" || exit 0
+          git push
