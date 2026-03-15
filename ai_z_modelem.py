@@ -8,21 +8,27 @@ from tensorflow.keras.models import load_model
 import cv2
 import sys
 
-print("🤖 AI - START")
+print("AI START")
 
 folder = 'zdjecia_czekajace'
 pliki = os.listdir(folder)
+print(f"Pliki: {pliki}")
 
-zdjecia = [p for p in pliki if p.endswith(('.jpg', '.png', '.jpeg'))]
+zdjecie_wybrane = None
+for plik in pliki:
+    if plik.endswith('.jpg'):
+        zdjecie_wybrane = plik
+        break
 
-if not zdjecia:
+if zdjecie_wybrane is None:
     print("Brak zdjec")
     sys.exit(0)
 
-zdjecie = zdjecia
-print(f"Zdjecie: {zdjecie}")
+print(f"Wybrane: {zdjecie_wybrane}")
+print(f"Typ: {type(zdjecie_wybrane)}")
 
-sciezka = os.path.join(folder, zdjecie)
+sciezka = os.path.join(folder, zdjecie_wybrane)
+print(f"Sciezka: {sciezka}")
 
 model = load_model('model.h5')
 
@@ -58,4 +64,4 @@ os.makedirs('zdjecia_gotowe', exist_ok=True)
 nowa_nazwa = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{plate_number}.jpg"
 shutil.move(sciezka, os.path.join('zdjecia_gotowe', nowa_nazwa))
 
-print("GOTOWE")
+print("KONIEC")
