@@ -3,7 +3,9 @@ name: AI
 on:
   push:
     paths:
-      - 'zdjecia_czekajace/**'
+      - 'zdjecia_czekajace/*.jpg'
+      - 'zdjecia_czekajace/*.jpeg'
+      - 'zdjecia_czekajace/*.png'
   workflow_dispatch:
 
 jobs:
@@ -13,5 +15,17 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: echo "WORKFLOW ODPALONY"
-      - run: ls -la zdjecia_czekajace/
+      
+      - name: Instalacja bibliotek
+        run: pip install tensorflow opencv-python-headless numpy
+      
+      - name: Uruchom AI
+        run: python ai_z_modelem.py
+      
+      - name: Zapisz zmiany
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add zdjecia_czekajace/ zdjecia_gotowe/ data/parking.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "AI auto"
+          git push
