@@ -1,21 +1,14 @@
 name: AI
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 on:
   push:
     paths:
-      - 'zdjecia/**'
       - 'zdjecia_czekajace/**'
-      - 'data/**'
-      - 'model.h5'
-      - 'ai_z_modelem.py'
-      - 'selekcja.py'
-    # Wyklucz zmiany w folderze _site (gdzie buduje się strona)
-    paths-ignore:
-      - '_site/**'
-      - '.github/workflows/jekyll-*.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ai:
     runs-on: ubuntu-latest
