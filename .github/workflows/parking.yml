@@ -14,11 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Pull najnowsze zmiany
+      - name: Konfiguracja Git
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git pull --rebase origin main
+      
+      - name: Pull najnowsze zmiany
+        run: git pull --rebase origin main
       
       - name: Sprawdź czy są zdjęcia w zdjecia/
         run: |
@@ -28,7 +30,7 @@ jobs:
             python selekcja.py
           fi
       
-      - name: Commit i push z rebase
+      - name: Commit i push
         run: |
           git add zdjecia/ zdjecia_czekajace/
           git diff --quiet && git diff --staged --quiet || git commit -m "Selekcja"
@@ -43,11 +45,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Pull najnowsze zmiany
+      - name: Konfiguracja Git
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git pull --rebase origin main
+      
+      - name: Pull najnowsze zmiany
+        run: git pull --rebase origin main
       
       - name: Sprawdź czy są zdjęcia w zdjecia_czekajace/
         run: |
@@ -57,7 +61,7 @@ jobs:
             python ai_z_modelem.py
           fi
       
-      - name: Commit i push z rebase
+      - name: Commit i push
         run: |
           git add zdjecia_czekajace/ zdjecia_gotowe/ data/parking.json
           git diff --quiet && git diff --staged --quiet || git commit -m "AI"
