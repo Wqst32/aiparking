@@ -44,6 +44,16 @@ with open('data/parking.json', 'w') as f:
 # 6. Przenieś zdjęcie do gotowe
 os.makedirs('zdjecia_gotowe', exist_ok=True)
 nowa_nazwa = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{tablica}.jpg"
-shutil.move(sciezka, os.path.join('zdjecia_gotowe', nowa_nazwa))
-print(f"📦 Przeniesiono do: zdjecia_gotowe/{nowa_nazwa}")
+cel = os.path.join('zdjecia_gotowe', nowa_nazwa)
+
+# WAŻNE: przenieś (usuwa z czekajace)
+shutil.move(sciezka, cel)
+print(f"📦 Przeniesiono do: {cel}")
+
+# 7. Sprawdź czy na pewno usunięte
+if not os.path.exists(sciezka):
+    print(f"✅ Potwierdzam: plik usunięty z czekajace")
+else:
+    print(f"❌ BŁĄD: plik dalej istnieje!")
+
 print("✅ Koniec")
