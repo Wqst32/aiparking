@@ -1,0 +1,38 @@
+name: 1. Selekcja najlepszego zdjęcia
+
+on:
+  push:
+    paths:
+      - 'zdjecia/*.jpg'
+      - 'zdjecia/*.jpeg'
+      - 'zdjecia/*.png'
+  workflow_dispatch:
+
+jobs:
+  selekcja:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Pobierz repozytorium
+        uses: actions/checkout@v3
+      
+      - name: Instalacja OpenCV
+        run: pip install opencv-python-headless numpy
+      
+      - name: DEBUG - pokaż zdjęcia
+        run: |
+          echo "📸 Zdjęcia w folderze zdjecia:"
+          ls -la zdjecia/ || echo "Brak zdjęć"
+      
+      - name: Uruchom selekcję
+        run: python selekcja.py
+      
+      - name: Zapisz zmiany
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add zdjecia/ zdjecia_czekajace/
+          git diff --quiet && git diff --staged --quiet || git commit -m "Selekcja: wybrano najlepsze zdjęcie"
+          git push
