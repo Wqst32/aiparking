@@ -3,6 +3,13 @@ import os
 import shutil
 from datetime import datetime
 import hashlib
+import subprocess
+
+# KONFIGURACJA GIT NA POCZĄTEK!
+subprocess.run(['git', 'config', '--global', 'user.email', 'actions@github.com'], check=True)
+subprocess.run(['git', 'config', '--global', 'user.name', 'GitHub Actions'], check=True)
+
+# Reszta kodu...
 
 def ocen_ostrosc(sciezka):
     """Ocenia ostrość zdjęcia w skali 0-100"""
@@ -98,7 +105,6 @@ def main():
 if __name__ == "__main__":
     main()
 # Po przeniesieniu zdjęcia do zdjecia_czekajace/
-import subprocess
 
 # Dodaj zmiany do git
 subprocess.run(['git', 'add', 'zdjecia_czekajace/'], check=True)
