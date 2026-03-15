@@ -1,0 +1,39 @@
+name: 2. AI - rozpoznawanie tablic
+
+on:
+  push:
+    paths:
+      - 'zdjecia_czekajace/**'  # Zmienione na ** żeby łapać wszystko
+  workflow_dispatch:  # Dodane ręczne uruchamianie
+
+jobs:
+  ai:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Pobierz repozytorium
+        uses: actions/checkout@v3
+      
+      - name: DEBUG - pokaż strukturę
+        run: |
+          echo "📂 Sprawdzam foldery:"
+          ls -la
+          echo ""
+          echo "📂 zdjecia_czekajace:"
+          ls -la zdjecia_czekajace/ || echo "Pusty lub brak"
+      
+      - name: Zainstaluj biblioteki
+        run: pip install numpy
+      
+      - name: Uruchom AI
+        run: python ai_symulacja.py
+      
+      - name: Zapisz zmiany
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add zdjecia_czekajace/ zdjecia_gotowe/ data/parking.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "AI: rozpoznanie tablicy"
+          git push
