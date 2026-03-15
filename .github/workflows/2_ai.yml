@@ -1,12 +1,8 @@
 name: AI
-
 on:
   push:
     paths:
       - 'zdjecia_czekajace/*.jpg'
-      - 'zdjecia_czekajace/*.jpeg'
-      - 'zdjecia_czekajace/*.png'
-
 jobs:
   ai:
     runs-on: ubuntu-latest
@@ -20,5 +16,5 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add zdjecia_czekajace/ zdjecia_gotowe/ data/parking.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "AI auto"
+          git diff --quiet && git diff --staged --quiet || git commit -m "AI"
           git push
