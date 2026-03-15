@@ -8,32 +8,28 @@ from tensorflow.keras.models import load_model
 import cv2
 import sys
 
-print("🤖 AI - START") 
-
-# Debug
-print(f"Zawartość zdjecia_czekajace: {os.listdir('zdjecia_czekajace')}")
-
-zdjecia = [f for f in os.listdir('zdjecia_czekajace') if f.lower().endswith(('.jpg', '.png'))]
-print(f"Znalezione zdjęcia: {zdjecia}")
-print(f"Typ zdjecia: {type(zdjecia)}")
-
-if not zdjecia:
-    print("❌ Brak zdjęć")
-    sys.exit(0)
-
-zdjecie = zdjecia
-print(f"Wybrane zdjęcie: {zdjecie}")
-print(f"Typ zdjecie: {type(zdjecie)}")
+print("🤖 AI - START")
 
 # 1. Znajdź zdjęcie
-zdjecia = [f for f in os.listdir('zdjecia_czekajace') if f.lower().endswith(('.jpg', '.png'))]
+if not os.path.exists('zdjecia_czekajace'):
+    print("❌ Brak folderu zdjecia_czekajace")
+    sys.exit(1)
+
+wszystkie_pliki = os.listdir('zdjecia_czekajace')
+print(f"Wszystkie pliki: {wszystkie_pliki}")
+
+zdjecia = [f for f in wszystkie_pliki if f.lower().endswith(('.jpg', '.png', '.jpeg'))]
+print(f"Znalezione zdjęcia: {zdjecia}")
+
 if not zdjecia:
     print("❌ Brak zdjęć")
     sys.exit(0)
 
-zdjecie = zdjecia  # ← BIERZ PIERWSZY ELEMENT
+zdjecie = zdjecia  # PIERWSZY ELEMENT
+print(f"📸 Plik: {zdjecie} (typ: {type(zdjecie)})")
+
 sciezka = os.path.join('zdjecia_czekajace', zdjecie)
-print(f"📸 Plik: {zdjecie}")
+print(f"Ścieżka: {sciezka}")
 
 # 2. Wczytaj model
 try:
@@ -46,6 +42,10 @@ except Exception as e:
 # 3. Przetwórz zdjęcie
 try:
     img = cv2.imread(sciezka)
+    if img is None:
+        print(f"❌ Nie można wczytać zdjęcia: {sciezka}")
+        sys.exit(1)
+    
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (224, 224))
     img = img.astype(np.float32) / 255.0
@@ -76,6 +76,7 @@ for miejsce in parking:
         miejsce['status'] = 'zajete'
         miejsce['blacha'] = plate_number
         miejsce['czas'] = datetime.now().strftime('%H:%M %d.%m.%Y')
+        print(f"✅ Zajęto miejsce {miejsce['id']}")
         break
 
 with open('data/parking.json', 'w') as f:
@@ -84,6 +85,5 @@ with open('data/parking.json', 'w') as f:
 # 6. Przenieś zdjęcie
 os.makedirs('zdjecia_gotowe', exist_ok=True)
 nowa_nazwa = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{plate_number}.jpg"
-shutil.move(sciezka, os.path.join('zdjecia_gotowe', nowa_nazwa))
-
-print("✅ KONIEC")
+stara_sciezka = sciezka
+nowa_sciezka = os.path.join('zdjecia_gotowe', nowa_nazwa)
