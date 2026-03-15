@@ -1,0 +1,10 @@
+name: TEST - czy działa
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: echo "GitHub Actions działa!"
