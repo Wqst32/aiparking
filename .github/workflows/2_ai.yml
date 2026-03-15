@@ -11,10 +11,17 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
-      - run: pip install tensorflow opencv-python-headless numpy
-      - run: python ai_z_modelem.py
-      - run: |
+      - uses: actions/checkout@v4  # Zmienione z v3 na v4
+      
+      - name: Instalacja bibliotek
+        run: pip install tensorflow opencv-python-headless numpy
+      
+      - name: Uruchom AI
+        run: python ai_z_modelem.py
+        continue-on-error: false  # Zatrzymaj jeśli błąd
+      
+      - name: Zapisz zmiany
+        run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add zdjecia_czekajace/ zdjecia_gotowe/ data/parking.json
