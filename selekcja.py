@@ -97,3 +97,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+# Po przeniesieniu zdjęcia do zdjecia_czekajace/
+import subprocess
+
+# Dodaj zmiany do git
+subprocess.run(['git', 'add', 'zdjecia_czekajace/'], check=True)
+
+# Zrób commit (jeśli coś się zmieniło)
+result = subprocess.run(['git', 'diff', '--cached', '--quiet'], capture_output=True)
+if result.returncode != 0:  # Jeśli są zmiany
+    subprocess.run(['git', 'commit', '-m', 'Przeniesiono zdjęcie do zdjecia_czekajace/'], check=True)
