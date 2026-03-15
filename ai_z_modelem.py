@@ -16,7 +16,7 @@ if not zdjecia:
     print("❌ Brak zdjęć")
     sys.exit(0)
 
-zdjecie = zdjecia
+zdjecie = zdjecia  # ← BIERZ PIERWSZY ELEMENT
 sciezka = os.path.join('zdjecia_czekajace', zdjecie)
 print(f"📸 Plik: {zdjecie}")
 
