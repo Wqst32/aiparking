@@ -3,6 +3,7 @@ import os
 import shutil
 from datetime import datetime
 import hashlib
+import subprocess
 
 
 def ocen_ostrosc(sciezka):
