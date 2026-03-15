@@ -28,11 +28,12 @@ jobs:
             python selekcja.py
           fi
       
-      - name: Commit i push
+      - name: Commit i push z rebase
         run: |
           git add zdjecia/ zdjecia_czekajace/
           git diff --quiet && git diff --staged --quiet || git commit -m "Selekcja"
-          git push
+          git pull --rebase origin main
+          git push origin main
 
   ai:
     runs-on: ubuntu-latest
@@ -56,8 +57,9 @@ jobs:
             python ai_z_modelem.py
           fi
       
-      - name: Commit i push
+      - name: Commit i push z rebase
         run: |
           git add zdjecia_czekajace/ zdjecia_gotowe/ data/parking.json
           git diff --quiet && git diff --staged --quiet || git commit -m "AI"
-          git push
+          git pull --rebase origin main
+          git push origin main
