@@ -92,7 +92,10 @@ def main():
                 os.remove(sciezka)
                 print(f"🗑️ Usunięto: {zdj}")
     
-    # ============ DEBUG - SPRAWDZENIE CZY PLIK JEST W zdjecia_czekajace/ ============
     print("\n" + "="*60)
     print("⏳ CZEKAM 5 SEKUND, ŻEBY SPRAWDZIĆ CZY PLIK JEST W zdjecia_czekajace/")
-    time.
+    print("="*60)
+    time.sleep(5)
+    
+    pliki = os.listdir('zdjecia_czekajace')
+    
