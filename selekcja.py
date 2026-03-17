@@ -3,6 +3,7 @@ import os
 import shutil
 from datetime import datetime
 import hashlib
+import time
 
 def ocen_ostrosc(sciezka):
     """Ocenia ostrość zdjęcia w skali 0-100"""
@@ -73,8 +74,8 @@ def main():
             print(f"  {zdj}: ostrość {ostrosc:.1f}")
         
         # Wybierz najlepsze
-        najlepsze = max(oceny, key=lambda x: x[2])
-        print(f"\n✅ WYBRANO: {najlepsze[0]} (ostrość: {najlepsze[2]:.1f})")
+        najlepsze = max(oceny, key=lambda x: x)
+        print(f"\n✅ WYBRANO: {najlepsze} (ostrość: {najlepsze:.1f})")
         
         # Generuj unikalną nazwę
         data = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -82,18 +83,19 @@ def main():
         cel = os.path.join('zdjecia_czekajace', nowa_nazwa)
         
         # Przenieś najlepsze
-        shutil.move(najlepsze[1], cel)
+        shutil.move(najlepsze, cel)
         print(f"📦 Przeniesiono do: zdjecia_czekajace/{nowa_nazwa}")
         
         # Usuń resztę
         for zdj, sciezka, _ in oceny:
-            if zdj != najlepsze[0] and os.path.exists(sciezka):
+            if zdj != najlepsze and os.path.exists(sciezka):
                 os.remove(sciezka)
                 print(f"🗑️ Usunięto: {zdj}")
     
+    # ============ DEBUG - SPRAWDZENIE CZY PLIK JEST W zdjecia_czekajace/ ============
     print("\n" + "="*60)
-    print("✅ SELEKCJA ZAKOŃCZONA")
-    print("="*60)
-
-if __name__ == "__main__":
-    main()
+    print("⏳ CZEKAM 5 SEKUND, ŻEBY SPRAWDZIĆ CZY PLIK JEST W zdjecia_czekajace/")
+    time.sleep(5)
+    
+    pliki = os.listdir('zdjecia_czekajace')
+    if
