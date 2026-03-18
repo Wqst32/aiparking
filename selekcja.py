@@ -2,9 +2,6 @@ import cv2
 import os
 import shutil
 from datetime import datetime
-import hashlib
-import subprocess
-
 
 def ocen_ostrosc(sciezka):
     """Ocenia ostrość zdjęcia w skali 0-100"""
@@ -75,21 +72,27 @@ def main():
             print(f"  {zdj}: ostrość {ostrosc:.1f}")
         
         # Wybierz najlepsze
-        najlepsze = max(oceny, key=lambda x: x[2])
-        print(f"\n✅ WYBRANO: {najlepsze[0]} (ostrość: {najlepsze[2]:.1f})")
+        najlepsze = max(oceny, key=lambda x: x)
+        print(f"\n✅ WYBRANO: {najlepsze} (ostrość: {najlepsze:.1f})")
         
         # Generuj unikalną nazwę
         data = datetime.now().strftime('%Y%m%d_%H%M%S')
         nowa_nazwa = f"seria_{i+1}_{data}.jpg"
         cel = os.path.join('zdjecia_czekajace', nowa_nazwa)
         
-        # Przenieś najlepsze
-        shutil.move(najlepsze[1], cel)
-        print(f"📦 Przeniesiono do: zdjecia_czekajace/{nowa_nazwa}")
+        # Załaduj zdjęcie, przekonwertuj na grayscale 64x64, zapisz
+        img = cv2.imread(najlepsze, cv2.IMREAD_GRAYSCALE)
+        if img is not None:
+            img = cv2.resize(img, (64, 64))
+            cv2.imwrite(cel, img)
+            print(f"🎨 Zapisano jako grayscale 64x64: {cel}")
+        else:
+            print(f"❌ Nie udało się załadować {najlepsze}")
+            continue
         
         # Usuń resztę
         for zdj, sciezka, _ in oceny:
-            if zdj != najlepsze[0] and os.path.exists(sciezka):
+            if zdj != najlepsze and os.path.exists(sciezka):
                 os.remove(sciezka)
                 print(f"🗑️ Usunięto: {zdj}")
     
@@ -99,14 +102,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-# Po przeniesieniu zdjęcia do zdjecia_czekajace/
-
-# Dodaj zmiany do git
-subprocess.run(['git', 'add', 'zdjecia_czekajace/'], check=True)
-
-# Zrób commit (jeśli coś się zmieniło)
-result = subprocess.run(['git', 'diff', '--cached', '--quiet'], capture_output=True)
-if result.returncode != 0:  # Jeśli są zmiany
-    subprocess.run(['git', 'commit', '-m', 'Przeniesiono zdjęcie do zdjecia_czekajace/'], check=True)
-
-print("✅ DEBUG ZAKOŃCZONY")
