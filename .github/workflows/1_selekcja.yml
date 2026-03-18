@@ -23,7 +23,7 @@ jobs:
           git config --global user.name "GitHub Actions"
       
       - name: Instalacja
-        run: pip install opencv-python-headless numpy
+        run: pip install opencv-python-headless numpy tensorflow
       
       - name: Uruchom selekcję
         run: python selekcja.py
@@ -37,11 +37,50 @@ jobs:
             echo "✅ TRIGGER ZADZIAŁA - plik jest w zdjecia_czekajace!"
           else
             echo "❌ BRAK PLIKU - trigger nie zadziała"
+            exit 1
           fi
+
+      - name: Uruchom model .h5 na zdjęciu
+        run: |
+          # Załaduj pierwsze zdjęcie z folderu
+          IMG=$(ls zdjecia_czekajace/*.jpg 2>/dev/null | head -1)
+          if [ -z "$IMG" ]; then
+            echo "❌ Brak zdjęcia do przetworzenia"
+            exit 1
+          fi
+
+          # Uruchom model w locie
+          python -c "
+import cv2
+import numpy as np
+import tensorflow as tf
+import os
+
+# Załaduj model
+model = tf.keras.models.load_model('model.h5')
+
+# Załaduj zdjęcie (64x64 grayscale)
+img = cv2.imread('$IMG', cv2.IMREAD_GRAYSCALE)
+img = img.astype('float32') / 255.0
+img = np.expand_dims(img, axis=0)
+img = np.expand_dims(img, axis=-1)  # (1, 64, 64, 1)
+
+# Predykcja
+prediction = model.predict(img)
+result_text = str(prediction)  # Dostosuj do formatu Twojego modelu
+
+# Zapisz wynik
+os.makedirs('zdjecia_gotowe', exist_ok=True)
+output_file = os.path.join('zdjecia_gotowe', os.path.basename('$IMG').replace('.jpg', '_result.txt'))
+with open(output_file, 'w') as f:
+    f.write(result_text)
+
+print(f'✅ Zapisano wynik do: {output_file}')
+"
 
       - name: Push zmian
         run: |
-          git add zdjecia/ zdjecia_czekajace/
+          git add zdjecia/ zdjecia_czekajace/ zdjecia_gotowe/
           git pull --rebase origin main || true
-          git diff --quiet && git diff --staged --quiet || git commit -m "Selekcja"
+          git diff --quiet && git diff --staged --quiet || git commit -m "Selekcja + OCR"
           git push origin main
